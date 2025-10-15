@@ -1,0 +1,25 @@
+---
+import WritingLayout from "@layouts/writing-layout.astro";
+import { ScrollProgress } from "@components/misc";
+import { type CollectionEntry } from "astro:content";
+import { getReadingTime, getPublishedCollection } from "@utils/index";
+
+export async function getStaticPaths() {
+  const posts = await getPublishedCollection("writing");
+  return posts.map((post: CollectionEntry<"writing">) => ({
+    params: { slug: post.slug },
+    props: post,
+  }));
+}
+
+type Props = CollectionEntry<"writing">;
+
+const post = Astro.props;
+const { Content } = await post.render();
+const readingTime = getReadingTime(post.body);
+---
+
+<WritingLayout {...post.data} readingTime={readingTime}>
+  <Content />
+  <ScrollProgress />
+</WritingLayout>

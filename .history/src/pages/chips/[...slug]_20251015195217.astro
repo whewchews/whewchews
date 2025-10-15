@@ -1,0 +1,25 @@
+---
+import ShipsLayout from "@layouts/ships-layout.astro";
+import { ScrollProgress } from "@components/misc";
+import { type CollectionEntry } from "astro:content";
+import { getReadingTime, getPublishedCollection } from "@utils/index";
+
+export async function getStaticPaths() {
+  const posts = await getPublishedCollection("ship");
+  return posts.map((post: CollectionEntry<"ship">) => ({
+    params: { slug: post.slug },
+    props: post,
+  }));
+}
+
+type Props = CollectionEntry<"chip">;
+
+const post = Astro.props;
+const { Content } = await post.render();
+const readingTime = getReadingTime(post.body);
+---
+
+<ShipsLayout {...post.data} readingTime={readingTime}>
+  <Content />
+  <ScrollProgress />
+</ShipsLayout>

@@ -1,0 +1,245 @@
+---
+import { Header } from "@components/misc";
+import { BaseHead } from "@components/seo";
+import { SITE_TITLE } from "@data/index";
+import { SITE_DESCRIPTION, socialLinks } from "@data/index";
+import RootLayout from "@layouts/root-layout.astro";
+import { getPublishedCollection, getCategoryColor } from "@utils/index";
+
+// Number of items to show per section
+const PREVIEW_LIMIT = 5;
+
+// Fetch tinker and archive posts
+const tinkers = (await getPublishedCollection("tinker"))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, PREVIEW_LIMIT);
+
+const archives = (await getPublishedCollection("archive"))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, PREVIEW_LIMIT);
+
+const tinkerTotal = (await getPublishedCollection("tinker")).length;
+const archiveTotal = (await getPublishedCollection("archive")).length;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      title={SITE_TITLE}
+      description={SITE_DESCRIPTION}
+      image="/images/ogimage.png"
+    />
+  </head>
+
+  <RootLayout>
+    <div
+      id="navbar+title"
+      class="flex flex-col w-full gap-6 max-w-xl lowercase mb-20"
+    >
+      <Header />
+      <h1
+        class="w-full text-start text-[min(12vw,72px)] font-medium leading-[0.9] tracking-[-2px] sm:tracking-[-4px]"
+      >
+        whewchews
+        <br />
+        <!-- <span class="text-gray-500 dark:text-gray-400">— dev.log</span> -->
+      </h1>
+    </div>
+
+    <div id="about" class="flex flex-col gap-4 w-full">
+      <div class="font-medium text-lg text-gray-700 dark:text-gray-400">
+        <!-- Based in South Korea. -->
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-10 w-full">
+      <!-- Tinker Section -->
+      <div id="tinker-section" class="flex flex-col gap-2 w-full">
+        *
+        <a
+          href="/tinker"
+          class="text-2xl font-medium tracking-tight hover:underline underline-offset-2"
+          >tinker</a
+        >
+        <div class="flex flex-col gap-2">
+          {
+            tinkers.map((tinker) => {
+              const category = tinker.data.category;
+              let hoverClass = "hover:bg-gray-300";
+
+              switch (category) {
+                case "ai":
+                  hoverClass = "hover:bg-yellow-300";
+                  break;
+                case "design":
+                  hoverClass = "hover:bg-lime-300";
+                  break;
+                case "product":
+                  hoverClass = "hover:bg-green-300";
+                  break;
+                case "engineering":
+                  hoverClass = "hover:bg-purple-300";
+                  break;
+                case "productivity":
+                  hoverClass = "hover:bg-pink-300";
+                  break;
+                case "learning":
+                  hoverClass = "hover:bg-blue-300";
+                  break;
+                case "opensource":
+                  hoverClass = "hover:bg-orange-400";
+                  break;
+                case "thoughts":
+                  hoverClass = "hover:bg-red-400";
+                  break;
+                case "tools":
+                  hoverClass = "hover:bg-cyan-300";
+                  break;
+                case "work":
+                  hoverClass = "hover:bg-teal-300";
+                  break;
+                case "development":
+                  hoverClass = "hover:bg-purple-300";
+                  break;
+                case "experiments":
+                  hoverClass = "hover:bg-cyan-300";
+                  break;
+                case "personal":
+                  hoverClass = "hover:bg-pink-300";
+                  break;
+                case "projects":
+                  hoverClass = "hover:bg-green-300";
+                  break;
+              }
+
+              return (
+                <a
+                  href={`/tinker/${tinker.slug}`}
+                  class={`flex flex-row gap-3 items-baseline py-1 px-2 -mx-2 rounded transition-all ${hoverClass}`}
+                >
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    {category}
+                  </span>
+                  <span class="text-lg font-medium text-gray-900 dark:text-gray-900">
+                    {tinker.data.title}
+                  </span>
+                </a>
+              );
+            })
+          }
+        </div>
+        {
+          tinkerTotal > PREVIEW_LIMIT && (
+            <a
+              href="/tinker"
+              class="text-sm font-medium text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:underline underline-offset-2"
+            >
+              more ({tinkerTotal - PREVIEW_LIMIT} more) →
+            </a>
+          )
+        }
+      </div>
+
+      <!-- Archive Section -->
+      <div id="archive-section" class="flex flex-col gap-2 w-full">
+        *
+        <a
+          href="/archive"
+          class="text-2xl font-medium tracking-tight hover:underline underline-offset-2"
+          >archive</a
+        >
+        <div class="flex flex-col gap-2">
+          {
+            archives.map((archive) => {
+              const category = archive.data.category;
+              let hoverClass = "hover:bg-gray-300";
+
+              switch (category) {
+                case "ai":
+                  hoverClass = "hover:bg-yellow-300";
+                  break;
+                case "design":
+                  hoverClass = "hover:bg-lime-300";
+                  break;
+                case "product":
+                  hoverClass = "hover:bg-green-300";
+                  break;
+                case "engineering":
+                  hoverClass = "hover:bg-purple-300";
+                  break;
+                case "productivity":
+                  hoverClass = "hover:bg-pink-300";
+                  break;
+                case "learning":
+                  hoverClass = "hover:bg-blue-300";
+                  break;
+                case "opensource":
+                  hoverClass = "hover:bg-orange-400";
+                  break;
+                case "thoughts":
+                  hoverClass = "hover:bg-red-400";
+                  break;
+                case "tools":
+                  hoverClass = "hover:bg-cyan-300";
+                  break;
+                case "work":
+                  hoverClass = "hover:bg-teal-300";
+                  break;
+                case "development":
+                  hoverClass = "hover:bg-purple-300";
+                  break;
+                case "experiments":
+                  hoverClass = "hover:bg-cyan-300";
+                  break;
+                case "personal":
+                  hoverClass = "hover:bg-pink-300";
+                  break;
+                case "projects":
+                  hoverClass = "hover:bg-green-300";
+                  break;
+              }
+
+              return (
+                <a
+                  href={`/archive/${archive.slug}`}
+                  class={`flex flex-row gap-3 items-baseline py-1 px-2 -mx-2 rounded transition-all ${hoverClass}`}
+                >
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    {category}
+                  </span>
+                  <span class="text-lg font-medium text-gray-900 dark:text-gray-900">
+                    {archive.data.title}
+                  </span>
+                </a>
+              );
+            })
+          }
+        </div>
+        {
+          archiveTotal > PREVIEW_LIMIT && (
+            <a
+              href="/archive"
+              class="text-sm font-medium text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:underline underline-offset-2"
+            >
+              more ({archiveTotal - PREVIEW_LIMIT} more) →
+            </a>
+          )
+        }
+      </div>
+      *
+      <div id="social-links" class="flex flex-row gap-4 w-full">
+        {
+          socialLinks.map((link) => (
+            <a
+              href={link.url}
+              class="text-lg font-medium text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:underline underline-offset-2"
+            >
+              {link.label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </RootLayout>
+</html>

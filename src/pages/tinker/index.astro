@@ -1,0 +1,76 @@
+---
+import { Header } from "@components/misc";
+import { BaseHead } from "@components/seo";
+import { SITE_DESCRIPTION, SITE_TITLE } from "@data/index";
+import { getPublishedCollection, getCategoryColor, getUrl } from "@utils/index";
+import RootLayout from "@layouts/root-layout.astro";
+
+const tinkers = (await getPublishedCollection("tinker")).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+// Group tinkers by category
+const tinkersByCategory = tinkers.reduce((acc, tinker) => {
+	const category = tinker.data.category;
+	if (!acc[category]) {
+		acc[category] = [];
+	}
+	acc[category].push(tinker);
+	return acc;
+}, {} as Record<string, typeof tinkers>);
+---
+
+<!doctype html>
+<html lang='en'>
+	<head>
+		<BaseHead
+			title={SITE_TITLE}
+			description={SITE_DESCRIPTION}
+			image='/images/ogimage.png'
+		/>
+	</head>
+	<RootLayout>
+		<div
+			id='navbar+title'
+			class='flex flex-col w-full gap-6 max-w-xl'>
+			<Header />
+			<h1 class='w-full text-7xl font-medium tracking-tight mb-6'>tinker</h1>
+
+			{
+				tinkers.length === 0 ? (
+					<p class="text-gray-500 dark:text-gray-400 italic">
+						No posts yet — still brewing ideas ☕️
+					</p>
+				) : (
+				Object.entries(tinkersByCategory).map(([category, items]) => (
+					<div class="mb-8">
+						<h2 class="text-2xl font-medium mb-4 text-gray-800 dark:text-gray-200 underline decoration-wavy">
+							{category}
+						</h2>
+						<div class="flex flex-col gap-4">
+							{items.map((tinker) => {
+								const bgColor = getCategoryColor(tinker.data.category);
+								return (
+									<a href={getUrl(`/tinker/${tinker.slug}`)} class="group">
+										<article class={`flex flex-col gap-2 p-4 rounded-lg transition-all ${bgColor}`}>
+											<h3 class="text-xl font-medium text-gray-900 dark:text-gray-900">{tinker.data.title}</h3>
+											<p class="text-gray-800 dark:text-gray-800">{tinker.data.description}</p>
+											<time class="text-sm text-gray-700 dark:text-gray-700">
+												{tinker.data.pubDate.toLocaleDateString("en-US", {
+													year: "numeric",
+													month: "long",
+													day: "numeric",
+												})}
+											</time>
+										</article>
+									</a>
+								);
+							})}
+						</div>
+					</div>
+				))
+				)
+			}
+		</div>
+	</RootLayout>
+</html>

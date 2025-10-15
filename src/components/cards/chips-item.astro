@@ -1,0 +1,13 @@
+---
+import { Dots } from "@components/misc";
+import { getUrl } from "@utils/index";
+
+const { title, description, slug, chip_count } = Astro.props;
+---
+
+<a href={getUrl(`/chips/${slug}`)}>
+  <!-- sronly h3 -->
+  <h3 class="sr-only">{title}</h3>
+  <p class="sr-only">{description} chips</p>
+  <Dots chip_count={chip_count} />
+</a>
